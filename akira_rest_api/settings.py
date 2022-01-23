@@ -147,3 +147,13 @@ CSRF_COOKIE_SECURE = True
 SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_PRELOAD = True
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+#SMTP Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "4projtest@gmail.com"
+EMAIL_HOST_PASSWORD = "qwypiocbcstwltgk"
+
+ADMINS = [('Sai Akhil Kumar Reddy N', '4akhilkumar@gmail.com')]

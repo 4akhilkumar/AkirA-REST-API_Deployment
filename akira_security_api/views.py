@@ -18,25 +18,19 @@ class IndexView(APIView):
 
         ASCII_Username_Sum = list(map(int, str(sum(ASCII_Username))))
 
-        # Print the second largest number from ASCII_Username_Sum
         second_largest = sorted(ASCII_Username_Sum)[-2]
 
-        # Finding the Password length
         lengthUsername10 = len(username) * 10
         password_length = encryptedTextLength / lengthUsername10
 
-        # Divide the encrypted text into password_length value parts and store it in a list
         encryptedText_list = []
         for i in range(int(password_length)):
             encryptedText_list.append(encryptedText[i*int(lengthUsername10):(i+1)*int(lengthUsername10)])
 
-        # Find the random digits in the encryptedText_list
         randomDigits = []
-        # Store the last 5th character of each element in the encryptedText_list in randomDigits list
         for i in range(len(encryptedText_list)):
             randomDigits.append(encryptedText_list[i][-second_largest])
 
-        # get the elements of the encryptedText_list at specific index using randomDigits elements as index values and store it in a list name final_list
         final_list = []
         for i in range(len(encryptedText_list)):
             final_list.append(encryptedText_list[i][int(randomDigits[i])])

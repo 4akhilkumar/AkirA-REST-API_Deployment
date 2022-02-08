@@ -4,12 +4,12 @@ from rest_framework.response import Response
 import re
 import secrets
 import random
+import math
 
 class IndexView(APIView):
     def get(self, request, MetaKey, EncryptedMetaKey):
         username = MetaKey
         encryptedText = EncryptedMetaKey
-
         encryptedTextLength = len(encryptedText)
 
         ASCII_Username = []
@@ -18,7 +18,25 @@ class IndexView(APIView):
 
         ASCII_Username_Sum = list(map(int, str(sum(ASCII_Username))))
 
-        second_largest = sorted(ASCII_Username_Sum)[-2]
+        for i in range(len(ASCII_Username_Sum)):
+            if ASCII_Username_Sum[i] == 0:
+                ASCII_Username_Sum[i] = 1
+
+        max_ASCII_Username_Sum = max(ASCII_Username_Sum)
+
+        def findLargest(arr):
+            a=arr
+            a=list(set(a))
+            a.sort()
+            if(len(a)==1 ):
+                return (a[0]+1)
+            else:
+                return (a[-2])
+
+        second_largest = findLargest(ASCII_Username_Sum)
+
+        if second_largest == 0 or math.isinf(second_largest) or second_largest == -math.inf or second_largest == max_ASCII_Username_Sum:
+            second_largest = max_ASCII_Username_Sum + 1
 
         lengthUsername10 = len(username) * 10
         password_length = encryptedTextLength / lengthUsername10
@@ -31,19 +49,22 @@ class IndexView(APIView):
         for i in range(len(encryptedText_list)):
             randomDigits.append(encryptedText_list[i][-second_largest])
 
-        final_list = []
+        HexList = []
         for i in range(len(encryptedText_list)):
-            final_list.append(encryptedText_list[i][int(randomDigits[i])])
+            HexList.append(encryptedText_list[i][int(randomDigits[i])]+encryptedText_list[i][int(randomDigits[i])+1])
+
+        final_list = []
+        for i in range(len(HexList)):
+            final_list.append(chr(int(HexList[i], 16)))
 
         Plain_password = []
         for i in final_list:
-            value = max(ASCII_Username_Sum) + int(max(randomDigits))
+            value = max_ASCII_Username_Sum + int(max(randomDigits))
             Plain_password.append(chr(ord(i) - value))
-
-        password = "".join(Plain_password)
+        decipherText = "".join(Plain_password)
 
         data = {
-            'MetaKey': password,
+            'MetaKey': decipherText,
         }
         return Response(data)
 

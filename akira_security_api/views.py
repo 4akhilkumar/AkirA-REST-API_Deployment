@@ -120,6 +120,7 @@ class CustomDecryption(APIView):
 
 class isSensibleEmail(APIView):
     def get(self, request, email):
+        validEmail, disposable = False, True
         regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
         if(re.fullmatch(regex, email)):
             validEmail = True
@@ -128,11 +129,11 @@ class isSensibleEmail(APIView):
                 url = 'https://'+domain.group()
                 response = requests.get(url)
                 if response.status_code == 200:
-                    disposable = True
-                else:
                     disposable = False
+                else:
+                    disposable = True
             except Exception:
-                disposable = False
+                disposable = True
         else:
             validEmail = False
         data = {

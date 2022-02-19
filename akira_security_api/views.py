@@ -5,6 +5,7 @@ import re
 import secrets
 import random
 import math
+import requests
 
 class IndexView(APIView):
     def get(self, request, MetaKey, EncryptedMetaKey):
@@ -114,5 +115,28 @@ class CustomDecryption(APIView):
 
         data = {
             'DecryptedUsername': DecryptedUsername,
+        }
+        return Response(data)
+
+class isSensibleEmail(APIView):
+    def get(self, request, email):
+        regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+        if(re.fullmatch(regex, email)):
+            validEmail = True
+            domain = re.search("@[\w.]+", email)
+            try:
+                url = 'https://'+domain.group()
+                response = requests.get(url)
+                if response.status_code == 200:
+                    disposable = True
+                else:
+                    disposable = False
+            except Exception:
+                disposable = False
+        else:
+            validEmail = False
+        data = {
+            'ValidEmail': validEmail,
+            'Disposable': disposable,
         }
         return Response(data)
